@@ -1,0 +1,20 @@
+CLAUDE.local.md
+
+# Dados e credenciais
+data/
+kaggle.json
+.env
+
+# Modelos
+models/
+*.pkl
+*.joblib
+*.lgb
+
+# Ambiente e temporários
+.venv/
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+_scratch/
+.DS_Store
