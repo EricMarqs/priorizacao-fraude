@@ -82,3 +82,4 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
   - Quase todas as colunas numéricas, incluindo as 339 V: pesada para 8 GB, difícil de explicar e deixa de ser um baseline simples.
 - **Motivo:** as colunas C não têm vazios, então deixam a régua mais justa sem exigir tratamento. Justificativa proposta pelo Claude. O Éric seguiu a recomendação sem escrever um motivo próprio.
 - **Limite:** a marca de identidade muda entre treino e validação (27,47% e 19,60% das transações com identidade), o que pode reduzir o desempenho fora do treino.
+- **Correção:** a recomendação foi inconsistente. As colunas D foram rejeitadas por não dar para auditar se usam informação futura, mas as colunas C também vêm pré-calculadas pela Vesta e têm o mesmo limite. O desempenho da logística pode estar inflado por isso.
