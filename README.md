@@ -16,6 +16,39 @@ O pedido vem com duas condições. A solução precisa funcionar em compras futu
 
 A maior parte das colunas é anônima. `TransactionDT` é contada em segundos a partir de uma referência que não é informada, então o projeto usa "dias desde a referência", e nunca datas reais. Os valores não têm símbolo de moeda.
 
+### O que tem em cada coluna
+
+As descrições seguem a página da competição. Os campos vazios foram medidos na base inteira.
+
+| Grupo | Colunas | O que é | Qtd. | Vazios | Uso no projeto |
+|---|---|---|---|---|---|
+| Identificação | `TransactionID` | Número da compra | 1 | 0% | Não entra no modelo |
+| Rótulo | `isFraud` | 1 = fraude, 0 = legítima | 1 | 0% | É o que o modelo prevê |
+| Tempo | `TransactionDT` | Segundos desde uma referência | 1 | 0% | Divide treino, validação e teste |
+| Valor | `TransactionAmt` | Valor da compra | 1 | 0% | Entra no modelo e na fila por valor esperado |
+| Produto | `ProductCD` | Código do tipo de produto | 1 | 0% | Entra no modelo |
+| Cartão | `card1` a `card6` | Códigos do cartão, bandeira e crédito ou débito | 6 | 0,51% | Entra no modelo |
+| Endereço | `addr1`, `addr2` | Códigos de endereço | 2 | 11,13% | Entra no modelo |
+| Distância | `dist1`, `dist2` | Distâncias entre endereços | 2 | 76,64% | Entra no modelo |
+| E-mail | `P_emaildomain`, `R_emaildomain` | Domínio do e-mail do comprador e do destinatário | 2 | 46,37% | Entra no modelo |
+| C | `C1` a `C14` | Contagens pré-calculadas, de significado oculto | 14 | 0% | Modelo apresentado com e sem elas |
+| D | `D1` a `D15` | Intervalos de tempo, como dias desde uma compra anterior | 15 | 58,15% | Não entra: não dá para auditar se usam o futuro |
+| M | `M1` a `M9` | Correspondências, como nome e endereço do cartão | 9 | 49,92% | Não entra: os vazios mudam muito com o tempo |
+| V | `V1` a `V339` | Variáveis criadas pela empresa que publicou os dados | 339 | 43,04% | Não entra: não dá para auditar, e são difíceis de explicar |
+| Identidade | `id_01` a `id_38` | Dados de rede, navegador e dispositivo | 38 | 84,82% | Só como marca de "tem identidade" |
+| Dispositivo | `DeviceType`, `DeviceInfo` | Tipo e modelo do aparelho | 2 | 78,03% | Não entra |
+
+São 434 colunas no total. O modelo final usa 15 colunas, ou 29 com as colunas C.
+
+**Por que tão poucas?** O corte foi proposital. Cerca de 90% das colunas (392 de 434) são dos grupos V, D e id. Elas e as colunas M ficaram de fora por três motivos:
+- **Não dá para auditar.** As colunas V e D foram calculadas pela empresa que publicou os dados, sem dizer como. Se alguma usar informação de depois da compra, o modelo parece ótimo nos testes e falha em produção.
+- **Mudam com o tempo.** Nas colunas M e de identidade, a quantidade de campos vazios muda muito entre os períodos. Um padrão aprendido no treino pode não valer depois.
+- **Precisam ser explicadas.** Cada coluna do modelo precisa ter um significado que dê para defender numa conversa com a área de negócio.
+
+O projeto troca um possível ganho de desempenho por um modelo que dá para explicar e auditar. Esse ganho não foi medido, porque usar as 434 colunas nunca foi testado. Mesmo com poucas colunas, o modelo superou as duas réguas simples.
+
+**Num projeto real**, o próximo passo seria levar essas colunas à área de negócio e a quem gera os dados. A pergunta seria como cada uma é calculada, em especial se usa alguma informação de depois da compra. Cada coluna explicada e auditada poderia entrar no modelo. Assim, o número de colunas usadas cresceria sem perder a capacidade de defender o resultado. Aqui isso não é possível, porque os dados são anônimos e a empresa que os publicou não divulga os cálculos.
+
 ## Etapas
 
 Cada etapa tem um notebook próprio, que termina com uma seção de conclusões. As 22 decisões do projeto, com as alternativas descartadas e os motivos, estão em [docs/decisoes.md](docs/decisoes.md).
