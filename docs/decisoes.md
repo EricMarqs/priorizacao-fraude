@@ -168,3 +168,19 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
   - Sem custo, só valor capturado: não depende de premissa, mas não responde ao valor líquido.
 - **Motivo:** responde à pergunta de negócio com uma única premissa declarada. Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio. A faixa de custos também foi proposta pelo Claude.
 - **Premissas declaradas:** revisar uma fraude evita 100% do valor dela. Revisar uma compra legítima custa só o custo de revisão. Nenhum desses valores vem dos dados.
+
+## Teste final
+
+### D20. Modelo aplicado no teste
+- **Decisão (escolha do Éric, 10/11/2026):** aplicar no teste, uma única vez, o modelo exatamente como foi validado: LightGBM treinado no treino e calibrado na 1ª metade da validação, nas versões com e sem colunas C.
+- **Alternativa rejeitada:** treinar de novo com treino e validação juntos. O modelo usaria dados mais recentes, mas não sobrariam dados para calibrar, e esse modelo exato nunca teria sido validado.
+- **Motivo (do Éric):** pelo escopo e pelo tempo do projeto, é o mais viável, e o treino e a validação já chegaram a um bom nível para aplicar no teste.
+- **Limite:** o modelo não aprende com os 40% mais recentes antes do teste, então pode chegar mais desatualizado ao período testado.
+- **Regra:** depois de ver o resultado do teste, nenhuma escolha de modelo, colunas, calibração ou custo é alterada.
+- **Resultado:** a PR-AUC com C caiu de 0,5461 na 2ª metade da validação para 0,4697 no teste. A fila por `P(fraude) × valor` continuou a melhor em 3% de capacidade: 49,74% do valor de fraude, contra 32,46% da regra por valor.
+
+### D21. Resposta à queda no teste
+- **Decisão (escolha do Éric, 10/11/2026):** não alterar o modelo nem simular o envelhecimento agora. Registrar como recomendação para produção treinar de novo todo mês com os dados novos e acompanhar a precisão e o valor capturado ao longo do tempo.
+- **Alternativa rejeitada:** simular a passagem do tempo dentro do treino e da validação para medir quanto o modelo envelhece. Mostraria com números o efeito do tempo, mas custaria algumas horas da Etapa 8 e da preparação da defesa. Pode voltar em 13/11 se houver folga.
+- **Motivo (do Éric):** atualizar todo mês com os dados novos permite entender a relação do tempo com os dados e melhorar, a cada ciclo, a quantidade de fraudes e o valor salvo.
+- **Limite:** a frequência mensal é uma proposta, não foi testada. Ajustes motivados pelo teste precisam ser medidos em dados novos, não no mesmo teste.
