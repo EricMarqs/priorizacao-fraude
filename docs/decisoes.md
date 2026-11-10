@@ -108,3 +108,35 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
 - **Motivo:** a chave com `addr1` é a mais próxima de um cartão real (39.087 grupos, maior grupo com 8.081 transações sem o teste), e o teste usa o modelo que será apresentado. Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio.
 - **Evidência:** na regressão logística com colunas C, as agregações quase não mudaram o resultado. A PR-AUC foi de 0,4357 sem agregações para valores entre 0,4303 e 0,4337 com elas.
 - **Limite:** nenhuma chave identifica um cartão real. O maior grupo ainda mistura muitos clientes.
+
+## Etapa 5: modelo
+
+### D13. LightGBM como modelo principal
+- **Decisão (método proposto no `CLAUDE.local.md`):** o modelo principal é o LightGBM.
+- **Alternativas:** outros modelos não foram apresentados como opção. O LightGBM já vinha no método proposto.
+- **Motivo (do Éric):** "por se tratar de um modelo de árvore de decisão, que é capaz de ter uma alta velocidade em lidar com dados tabulares".
+
+### D14. Dados para decidir quando parar o treino (early stopping)
+- **Decisão (escolha do Éric, 10/11/2026):** separar os últimos 20% do treino, no tempo, só para decidir o número de árvores. Depois, treinar de novo com o treino inteiro usando esse número.
+- **Alternativas rejeitadas:**
+  - Usar a validação: mais simples, mas a validação também calibra e compara os modelos, então o resultado ficaria otimista.
+  - Dividir a validação em duas metades no tempo: separa as funções, mas cada metade fica com cerca de 59 mil transações, e a comparação com os baselines deixa de usar a validação inteira.
+- **Motivo (do Éric):** usar os últimos 20% do treino para decidir quando parar, e não a validação inteira.
+- **Limite:** o número de árvores é aproximado, porque foi escolhido com menos dados do que o treino final usa.
+
+### D15. Colunas base do LightGBM
+- **Decisão (escolha do Éric, 10/11/2026):** as colunas da logística (valor, `ProductCD`, `card4`, `card6` e a marca de identidade), mais os dados brutos da transação: `card1`, `card2`, `card3`, `card5`, `addr1`, `addr2`, `dist1`, `dist2`, `P_emaildomain` e `R_emaildomain`. As colunas C e as agregações entram ou saem conforme as D11 e D12.
+- **Alternativas rejeitadas:**
+  - Só as colunas da logística: isola o efeito do modelo, mas aproveita pouco o LightGBM, que lida sozinho com vazios e categorias de muitos valores.
+  - Somar também as colunas M, D e as 339 V: é o conjunto mais completo, mas as D e V têm o mesmo limite de auditoria das C, e as M mudam muito entre os períodos (vazios em M1: 57,7% no treino e 28,7% na validação).
+- **Motivo:** são campos brutos da transação, não contagens pré-calculadas pela Vesta, e dá para explicar o que cada um é. Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio.
+- **Limites:** a comparação com a logística mistura o efeito do modelo e o das colunas novas. `card1` é um código, e a árvore pode decorar códigos específicos.
+- **Ajustes internos:** valores comuns e fixos, sem busca, por causa do prazo. Uma busca exigiria outro conjunto separado.
+
+### D16. Agregações fora do modelo final
+- **Decisão (escolha do Éric, 10/11/2026):** seguir para as Etapas 6 e 7 com o LightGBM sem agregações, nas versões com e sem colunas C (D11). O teste das agregações fica no notebook 05 como resultado.
+- **Alternativas rejeitadas:**
+  - Seguir com agregações: maior valor capturado em 3% (41,94% contra 40,26%), mas o ganho não se distingue de variação normal e o modelo fica mais complexo.
+  - Levar as duas versões até o fim e decidir pelo resultado de negócio: dobraria o trabalho com o prazo de 11/11.
+- **Motivo (do Éric):** as agregações não trouxeram uma grande melhora, então não faz sentido mantê-las.
+- **Evidência (validação, com colunas C):** PR-AUC de 0,5742 sem agregações e 0,5645 com elas. Sem colunas C: 0,2806 e 0,2718.
