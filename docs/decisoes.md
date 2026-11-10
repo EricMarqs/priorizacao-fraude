@@ -158,3 +158,13 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
   - Sem calibração: mais simples, mas a Etapa 7 multiplica a probabilidade pelo valor, e uma probabilidade errada distorce o valor esperado.
 - **Motivo:** estável com poucas fraudes e preserva a ordenação do modelo. Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio.
 - **Limite:** assume que o erro tem forma de S.
+
+## Etapa 7: negócio
+
+### D19. Custo de revisão
+- **Decisão (escolha do Éric, 10/11/2026):** valor líquido = valor de fraude capturado − custo fixo por revisão × número de revisões. O custo é uma premissa, testada em 1, 5, 10, 20 e 50 unidades monetárias da base, que não informa a moeda. Para comparação, a mediana do valor das compras no treino é 70,00.
+- **Alternativas rejeitadas:**
+  - Somar uma perda por cliente legítimo revisado: mais próxima da operação real, mas são duas premissas sem dado, e a sensibilidade vira uma grade difícil de defender.
+  - Sem custo, só valor capturado: não depende de premissa, mas não responde ao valor líquido.
+- **Motivo:** responde à pergunta de negócio com uma única premissa declarada. Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio. A faixa de custos também foi proposta pelo Claude.
+- **Premissas declaradas:** revisar uma fraude evita 100% do valor dela. Revisar uma compra legítima custa só o custo de revisão. Nenhum desses valores vem dos dados.
