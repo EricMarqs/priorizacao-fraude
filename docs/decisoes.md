@@ -62,6 +62,12 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
 - **Motivo:** o Éric disse que o projeto está distante do seu nível e que não conseguiria produzir à mão códigos tão complexos. Justificativa da opção proposta pelo Claude: é pouco código e deixa uma parte que o Éric pode defender na entrevista. O Éric escolheu a opção sem escrever um motivo próprio.
 - **Plano B:** se o Éric travar nessas peças, o Claude passa a escrever tudo (alternativa acima). O prazo de 10/11 continua valendo.
 
+### D10. Um notebook por etapa
+- **Decisão (escolha do Éric, provisória):** manter um notebook separado para cada etapa durante o projeto. Na Etapa 8, o Éric e o Claude reavaliam se a apresentação do portfólio fica assim ou unificada.
+- **Alternativa rejeitada por enquanto:** um único notebook com todas as etapas, mais direto de apresentar, mas pesado para 8 GB de RAM e sujeito a misturar variáveis entre etapas.
+- **Motivo:** justificativa proposta pelo Claude: cada etapa roda sozinha, economiza memória e reduz o risco de usar uma variável de outra etapa. O Éric aceitou manter e deixou a forma final para a reavaliação na Etapa 8.
+- **Origem:** os notebooks 02 a 04 foram criados separados por escolha do Claude, antes de essa decisão ser apresentada.
+
 ## Etapa 2: validação temporal
 
 ### D8. Forma do corte temporal
@@ -83,3 +89,22 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
 - **Motivo:** as colunas C não têm vazios, então deixam a régua mais justa sem exigir tratamento. Justificativa proposta pelo Claude. O Éric seguiu a recomendação sem escrever um motivo próprio.
 - **Limite:** a marca de identidade muda entre treino e validação (27,47% e 19,60% das transações com identidade), o que pode reduzir o desempenho fora do treino.
 - **Correção:** a recomendação foi inconsistente. As colunas D foram rejeitadas por não dar para auditar se usam informação futura, mas as colunas C também vêm pré-calculadas pela Vesta e têm o mesmo limite. O desempenho da logística pode estar inflado por isso.
+
+## Etapa 4: variáveis
+
+### D11. Colunas C no modelo principal
+- **Decisão (escolha do Éric, 10/11/2026):** treinar o LightGBM com e sem as colunas C e apresentar os dois resultados. Fazer também uma checagem de indício de uso do futuro nas colunas C.
+- **Alternativas rejeitadas:**
+  - Manter as colunas C sem comparação: melhor desempenho, mas, se houver vazamento, o resultado não se repetiria em produção e não teria defesa.
+  - Retirar as colunas C: mais defensável, mas com desempenho bem menor.
+- **Motivo:** o Éric primeiro escolheu manter as colunas C porque as métricas são melhores. O Claude apontou que um vazamento também melhoraria as métricas, então elas não distinguem sinal real de informação futura. O Éric então escolheu a opção recomendada, sem escrever um motivo próprio.
+- **Evidência:** na regressão logística, a PR-AUC na validação é 0,4357 com as colunas C e 0,1351 sem elas.
+
+### D12. Agregações por cartão
+- **Decisão (escolha do Éric, 10/11/2026):** testar no LightGBM as agregações com a chave `card1` a `card6` + `addr1` contra a versão sem agregações. Somada à D11, a Etapa 5 treina quatro versões: com e sem colunas C, com e sem agregações.
+- **Alternativas rejeitadas:**
+  - Não usar agregações: mais simples, mas descartaria sem teste no modelo principal algo previsto no plano.
+  - Usar as agregações sem comparar: mais rápido, mas não mostraria se elas ajudam.
+- **Motivo:** a chave com `addr1` é a mais próxima de um cartão real (39.087 grupos, maior grupo com 8.081 transações sem o teste), e o teste usa o modelo que será apresentado. Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio.
+- **Evidência:** na regressão logística com colunas C, as agregações quase não mudaram o resultado. A PR-AUC foi de 0,4357 sem agregações para valores entre 0,4303 e 0,4337 com elas.
+- **Limite:** nenhuma chave identifica um cartão real. O maior grupo ainda mistura muitos clientes.
