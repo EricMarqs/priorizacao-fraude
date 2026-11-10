@@ -140,3 +140,21 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
   - Levar as duas versões até o fim e decidir pelo resultado de negócio: dobraria o trabalho com o prazo de 11/11.
 - **Motivo (do Éric):** as agregações não trouxeram uma grande melhora, então não faz sentido mantê-las.
 - **Evidência (validação, com colunas C):** PR-AUC de 0,5742 sem agregações e 0,5645 com elas. Sem colunas C: 0,2806 e 0,2718.
+
+## Etapa 6: calibração
+
+### D17. Dados para calibrar
+- **Decisão (escolha do Éric, 10/11/2026):** dividir a validação em duas metades no tempo. A primeira ajusta a calibração. A segunda mede a calibração e recebe a análise de negócio da Etapa 7.
+- **Alternativas rejeitadas:**
+  - Calibrar na validação inteira e medir só no teste: usa mais dados, mas só no teste saberíamos se funcionou, e a Etapa 7 rodaria nos mesmos dados da calibração.
+  - Calibrar com os últimos 20% do treino: esses dados decidiram o número de árvores e entraram no treino do modelo final.
+- **Motivo (do Éric):** usar a validação inteira seria um problema para a Etapa 7, e os últimos 20% do treino já foram usados.
+- **Limite:** cada metade tem 59.054 transações, então a calibração e a Etapa 7 usam menos dados do que a validação inteira. A taxa de fraude muda entre as metades: 4,32% na primeira (2.550 fraudes) e 3,49% na segunda (2.061 fraudes).
+
+### D18. Método de calibração
+- **Decisão (escolha do Éric, 10/11/2026):** Platt, uma regressão logística de 2 parâmetros sobre a pontuação do LightGBM, aplicada às versões com e sem colunas C.
+- **Alternativas rejeitadas:**
+  - Isotônica: corrige qualquer distorção crescente, mas pode decorar a primeira metade com 2.550 fraudes e cria empates que atrapalham a escolha do topo da fila.
+  - Sem calibração: mais simples, mas a Etapa 7 multiplica a probabilidade pelo valor, e uma probabilidade errada distorce o valor esperado.
+- **Motivo:** estável com poucas fraudes e preserva a ordenação do modelo. Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio.
+- **Limite:** assume que o erro tem forma de S.
