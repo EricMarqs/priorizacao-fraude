@@ -184,3 +184,12 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
 - **Alternativa rejeitada:** simular a passagem do tempo dentro do treino e da validação para medir quanto o modelo envelhece. Mostraria com números o efeito do tempo, mas custaria algumas horas da Etapa 8 e da preparação da defesa. Pode voltar em 13/11 se houver folga.
 - **Motivo (do Éric):** atualizar todo mês com os dados novos permite entender a relação do tempo com os dados e melhorar, a cada ciclo, a quantidade de fraudes e o valor salvo.
 - **Limite:** a frequência mensal é uma proposta, não foi testada. Ajustes motivados pelo teste precisam ser medidos em dados novos, não no mesmo teste.
+
+## Etapa 8: comunicação
+
+### D22. Formato da apresentação (revisão da D10)
+- **Decisão (escolha do Éric, 10/11/2026):** manter os 8 notebooks separados e fazer um README completo, com a pergunta de negócio, os principais resultados, gráficos salvos em `reports/figures` e um link para cada notebook. Substitui a D10 provisória.
+- **Alternativas rejeitadas:**
+  - Somar um notebook de resumo: leitura contínua para apresentar ao vivo, mas repete o README e cria dois lugares para manter os números iguais.
+  - Juntar tudo num único notebook: pesado para 8 GB de RAM, lento para rodar e mistura variáveis entre etapas.
+- **Motivo:** o recrutador lê primeiro o README, e os notebooks separados já contam a história por etapa. Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio.
