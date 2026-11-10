@@ -71,3 +71,14 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
   - Dividir por quantidade com um intervalo descartado antes da validação e do teste: mais próxima da operação real, mas perde dados (39.307 transações com 7 dias, 177.843 com 30 dias), e o tamanho do intervalo seria uma premissa.
 - **Motivo:** mais simples de escrever e explicar, e o treino fica igual ao trecho usado na exploração (D5). Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio.
 - **Limites:** o teste vem logo depois do treino, como se o rótulo de fraude saísse na hora, embora ele só seja conhecido depois. As colunas V e D vêm pré-calculadas, e não dá para auditar se usam informação futura.
+
+## Etapa 3: baseline
+
+### D9. Colunas da regressão logística
+- **Decisão (escolha do Éric, 09/11/2026):** usar `TransactionAmt`, `ProductCD`, `card4`, `card6`, uma marca de "tem identidade" e as 14 colunas C. O outro baseline é a regra de revisar as compras de maior valor.
+- **Alternativas rejeitadas:**
+  - Só as colunas básicas, sem as C: mais simples, mas seria uma régua fraca e favoreceria o LightGBM na comparação.
+  - Básicas, colunas C e as 15 colunas D: régua mais exigente, mas as colunas D têm muitos vazios e não dá para auditar se usam informação futura.
+  - Quase todas as colunas numéricas, incluindo as 339 V: pesada para 8 GB, difícil de explicar e deixa de ser um baseline simples.
+- **Motivo:** as colunas C não têm vazios, então deixam a régua mais justa sem exigir tratamento. Justificativa proposta pelo Claude. O Éric seguiu a recomendação sem escrever um motivo próprio.
+- **Limite:** a marca de identidade muda entre treino e validação (27,47% e 19,60% das transações com identidade), o que pode reduzir o desempenho fora do treino.
