@@ -44,13 +44,13 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
 - **Alternativas rejeitadas:**
   - Base inteira: exporia padrões de fraude do período de teste.
   - Só os primeiros 60%: não mostraria mudanças nas variáveis ao longo do tempo.
-- **Motivo:** protege o teste e ainda mostra mudanças ao longo do tempo. Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio.
+- **Motivo do Éric (defesa de 11/11/2026):** não deixar a informação do futuro do teste vazar para as decisões do projeto. Acréscimo do Claude: o risco inclui as próprias escolhas do analista, que o padrão de fraude do período de teste influenciaria. A opção também mostra mudanças ao longo do tempo.
 - **Limite:** o corte provisório não substitui a divisão temporal da Etapa 2.
 
 ### D6. Formato da exploração
 - **Decisão (escolha do Éric):** notebook em `notebooks/01_exploracao.ipynb`, executado do início ao fim antes de cada entrega.
 - **Alternativa rejeitada:** script com figuras em `reports/figures`, que versiona melhor, mas espalha a análise e é menos legível.
-- **Motivo:** código, gráficos e interpretação ficam juntos. Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio.
+- **Motivo do Éric (defesa de 11/11/2026):** o notebook conta o passo a passo do trabalho, o que facilita ler e interpretar as decisões de cada etapa. Código, gráficos e interpretação ficam juntos.
 
 ## Organização do trabalho
 
@@ -59,7 +59,7 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
 - **Alternativas rejeitadas:**
   - O Claude escrever todo o código e o Éric revisar e explicar: menos risco no prazo, mas quase sem prática de código e mais exposição a um pedido de alteração ao vivo.
   - Manter a divisão original e reduzir o escopo do projeto: simplifica o conteúdo, mas não resolve a dificuldade com código.
-- **Motivo:** o Éric disse que o projeto está distante do seu nível e que não conseguiria produzir à mão códigos tão complexos. Justificativa da opção proposta pelo Claude: é pouco código e deixa uma parte que o Éric pode defender na entrevista. O Éric escolheu a opção sem escrever um motivo próprio.
+- **Motivo:** o Éric disse que o projeto está distante do seu nível e que não conseguiria produzir à mão códigos tão complexos. Justificativa da opção proposta pelo Claude: é pouco código e deixa uma parte que o Éric pode defender na entrevista. Escolha do Éric entre opções propostas pelo Claude.
 - **Plano B:** se o Éric travar nessas peças, o Claude passa a escrever tudo (alternativa acima). O prazo de 10/11 continua valendo.
 
 ### D10. Um notebook por etapa
@@ -75,7 +75,7 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
 - **Alternativas rejeitadas:**
   - Dividir por dias do calendário: períodos de duração equivalente, mas não é 60/20/20 em linhas (64,5% no treino), e parte do treino não foi vista na exploração.
   - Dividir por quantidade com um intervalo descartado antes da validação e do teste: mais próxima da operação real, mas perde dados (39.307 transações com 7 dias, 177.843 com 30 dias), e o tamanho do intervalo seria uma premissa.
-- **Motivo:** mais simples de escrever e explicar, e o treino fica igual ao trecho usado na exploração (D5). Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio.
+- **Motivo:** mais simples de escrever e explicar, e o treino fica igual ao trecho usado na exploração (D5). Escolha do Éric entre opções propostas pelo Claude.
 - **Limites:** o teste vem logo depois do treino, como se o rótulo de fraude saísse na hora, embora ele só seja conhecido depois. As colunas V e D vêm pré-calculadas, e não dá para auditar se usam informação futura.
 
 ## Etapa 3: baseline
@@ -86,7 +86,7 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
   - Só as colunas básicas, sem as C: mais simples, mas seria uma régua fraca e favoreceria o LightGBM na comparação.
   - Básicas, colunas C e as 15 colunas D: régua mais exigente, mas as colunas D têm muitos vazios e não dá para auditar se usam informação futura.
   - Quase todas as colunas numéricas, incluindo as 339 V: pesada para 8 GB, difícil de explicar e deixa de ser um baseline simples.
-- **Motivo:** as colunas C não têm vazios, então deixam a régua mais justa sem exigir tratamento. Justificativa proposta pelo Claude. O Éric seguiu a recomendação sem escrever um motivo próprio.
+- **Motivo:** as colunas C não têm vazios, então deixam a régua mais justa sem exigir tratamento. Escolha do Éric entre opções propostas pelo Claude.
 - **Limite:** a marca de identidade muda entre treino e validação (27,47% e 19,60% das transações com identidade), o que pode reduzir o desempenho fora do treino.
 - **Correção:** a recomendação foi inconsistente. As colunas D foram rejeitadas por não dar para auditar se usam informação futura, mas as colunas C também vêm pré-calculadas pela Vesta e têm o mesmo limite. O desempenho da logística pode estar inflado por isso.
 
@@ -97,7 +97,7 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
 - **Alternativas rejeitadas:**
   - Manter as colunas C sem comparação: melhor desempenho, mas, se houver vazamento, o resultado não se repetiria em produção e não teria defesa.
   - Retirar as colunas C: mais defensável, mas com desempenho bem menor.
-- **Motivo:** o Éric primeiro escolheu manter as colunas C porque as métricas são melhores. O Claude apontou que um vazamento também melhoraria as métricas, então elas não distinguem sinal real de informação futura. O Éric então escolheu a opção recomendada, sem escrever um motivo próprio.
+- **Motivo:** o Éric primeiro escolheu manter as colunas C porque as métricas são melhores. O Claude apontou que um vazamento também melhoraria as métricas, então elas não distinguem sinal real de informação futura. O Éric então escolheu a opção recomendada. Motivo do Éric (defesa de 11/11/2026): uma métrica melhor não prova que a coluna é boa, porque ela pode conter informação do futuro, e o modelo seria avaliado com as respostas antecipadas.
 - **Evidência:** na regressão logística, a PR-AUC na validação é 0,4357 com as colunas C e 0,1351 sem elas.
 
 ### D12. Agregações por cartão
@@ -105,7 +105,7 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
 - **Alternativas rejeitadas:**
   - Não usar agregações: mais simples, mas descartaria sem teste no modelo principal algo previsto no plano.
   - Usar as agregações sem comparar: mais rápido, mas não mostraria se elas ajudam.
-- **Motivo:** a chave com `addr1` é a mais próxima de um cartão real (39.087 grupos, maior grupo com 8.081 transações sem o teste), e o teste usa o modelo que será apresentado. Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio.
+- **Motivo:** a chave com `addr1` é a mais próxima de um cartão real (39.087 grupos, maior grupo com 8.081 transações sem o teste), e o teste usa o modelo que será apresentado. Escolha do Éric entre opções propostas pelo Claude.
 - **Evidência:** na regressão logística com colunas C, as agregações quase não mudaram o resultado. A PR-AUC foi de 0,4357 sem agregações para valores entre 0,4303 e 0,4337 com elas.
 - **Limite:** nenhuma chave identifica um cartão real. O maior grupo ainda mistura muitos clientes.
 
@@ -121,7 +121,7 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
 - **Alternativas rejeitadas:**
   - Usar a validação: mais simples, mas a validação também calibra e compara os modelos, então o resultado ficaria otimista.
   - Dividir a validação em duas metades no tempo: separa as funções, mas cada metade fica com cerca de 59 mil transações, e a comparação com os baselines deixa de usar a validação inteira.
-- **Motivo (do Éric):** usar os últimos 20% do treino para decidir quando parar, e não a validação inteira.
+- **Motivo (do Éric):** usar os últimos 20% do treino para decidir quando parar, e não a validação inteira. Na defesa de 11/11/2026, acrescentou: manter a validação honesta, sem viés vindo de uma decisão do modelo.
 - **Limite:** o número de árvores é aproximado, porque foi escolhido com menos dados do que o treino final usa.
 
 ### D15. Colunas base do LightGBM
@@ -129,7 +129,7 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
 - **Alternativas rejeitadas:**
   - Só as colunas da logística: isola o efeito do modelo, mas aproveita pouco o LightGBM, que lida sozinho com vazios e categorias de muitos valores.
   - Somar também as colunas M, D e as 339 V: é o conjunto mais completo, mas as D e V têm o mesmo limite de auditoria das C, e as M mudam muito entre os períodos (vazios em M1: 57,7% no treino e 28,7% na validação).
-- **Motivo:** são campos brutos da transação, não contagens pré-calculadas pela Vesta, e dá para explicar o que cada um é. Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio.
+- **Motivo:** são campos brutos da transação, não contagens pré-calculadas pela Vesta, e dá para explicar o que cada um é. Escolha do Éric entre opções propostas pelo Claude.
 - **Limites:** a comparação com a logística mistura o efeito do modelo e o das colunas novas. `card1` é um código, e a árvore pode decorar códigos específicos.
 - **Ajustes internos:** valores comuns e fixos, sem busca, por causa do prazo. Uma busca exigiria outro conjunto separado.
 
@@ -156,7 +156,7 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
 - **Alternativas rejeitadas:**
   - Isotônica: corrige qualquer distorção crescente, mas pode decorar a primeira metade com 2.550 fraudes e cria empates que atrapalham a escolha do topo da fila.
   - Sem calibração: mais simples, mas a Etapa 7 multiplica a probabilidade pelo valor, e uma probabilidade errada distorce o valor esperado.
-- **Motivo:** estável com poucas fraudes e preserva a ordenação do modelo. Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio.
+- **Motivo do Éric (defesa de 11/11/2026):** a Etapa 7 multiplica a probabilidade pelo valor, e uma probabilidade errada distorce o valor esperado. Acréscimo do Claude: o Platt é estável com poucas fraudes e preserva a ordenação do modelo.
 - **Limite:** assume que o erro tem forma de S.
 
 ## Etapa 7: negócio
@@ -166,7 +166,7 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
 - **Alternativas rejeitadas:**
   - Somar uma perda por cliente legítimo revisado: mais próxima da operação real, mas são duas premissas sem dado, e a sensibilidade vira uma grade difícil de defender.
   - Sem custo, só valor capturado: não depende de premissa, mas não responde ao valor líquido.
-- **Motivo:** responde à pergunta de negócio com uma única premissa declarada. Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio. A faixa de custos também foi proposta pelo Claude.
+- **Motivo:** responde à pergunta de negócio com uma única premissa declarada. Justificativa proposta pelo Claude, assim como a faixa de custos. Escolha do Éric entre opções propostas pelo Claude. Na defesa de 11/11/2026, o Éric registrou que o custo não foi informado pelo negócio nem consta nos dados.
 - **Premissas declaradas:** revisar uma fraude evita 100% do valor dela. Revisar uma compra legítima custa só o custo de revisão. Nenhum desses valores vem dos dados.
 
 ## Teste final
@@ -192,4 +192,4 @@ Cada entrada traz a decisão, a alternativa rejeitada e o motivo.
 - **Alternativas rejeitadas:**
   - Somar um notebook de resumo: leitura contínua para apresentar ao vivo, mas repete o README e cria dois lugares para manter os números iguais.
   - Juntar tudo num único notebook: pesado para 8 GB de RAM, lento para rodar e mistura variáveis entre etapas.
-- **Motivo:** o recrutador lê primeiro o README, e os notebooks separados já contam a história por etapa. Justificativa proposta pelo Claude. O Éric escolheu a opção sem escrever um motivo próprio.
+- **Motivo do Éric (defesa de 11/11/2026):** a memória RAM do computador, já que notebooks separados consomem menos. Acréscimo do Claude: o recrutador lê primeiro o README, e cada etapa roda sozinha, sem misturar variáveis com as outras.

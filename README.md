@@ -202,6 +202,6 @@ Foi tudo feito num MacBook M1 com 8 GB de RAM. Cada notebook carrega só as colu
 
 ## Como este projeto foi feito
 
-Desenvolvido com apoio do Claude Code (Anthropic), como projeto de aprendizado. Eu escrevi a divisão temporal (`src/divisao_temporal.py`) e a métrica de valor capturado (`src/metricas.py`), interpretei cada resultado e tomei as decisões registradas em [docs/decisoes.md](docs/decisoes.md). O Claude escreveu o restante do código, corrigiu possíveis erros de lógica durante o processo e ajustou o fluxograma da sequência dos notebooks.
+Desenvolvido com apoio do Claude Code (Anthropic), como projeto de aprendizado. Eu escrevi a divisão temporal (`src/divisao_temporal.py`) e a métrica de valor capturado (`src/metricas.py`), interpretei cada resultado e escolhi entre as opções de cada decisão, registradas em [docs/decisoes.md](docs/decisoes.md). O Claude escreveu o restante do código e os gráficos, propôs as opções de cada decisão com prós e contras, apontou erros de lógica durante o processo e redigiu as conclusões dos notebooks, que partem das minhas interpretações e foram corrigidas quando estavam erradas.
 
 
